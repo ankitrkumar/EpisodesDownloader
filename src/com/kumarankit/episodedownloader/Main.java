@@ -15,37 +15,55 @@ public class Main {
     public static void main(String[] args) {
         //Sample for study : http://thewatchseries.to/episode/modern_family_s7_e14.html
 
-        String seriesName = "", episodeNumber = "";
+        String episodeURL ="";
         if(args[1].equals("-l"))                     //ED "Modern Family" -l  #download the latest episode of this series
         {
-            constructLatestEpURL();
+            episodeURL = constructLatestEpURL(args);
         }
-        else                                         ////Input given as ED "Modern Family" s1-e14
+        else if(args.length == 2 && !args[1].equals("-l"))                                         ////Input given as ED "Modern Family" s1-e14
         {
-            seriesName = args[0].replace(" ","_");
-            //parse the season number and episode number
-            episodeNumber = parseEpisodeNumber(args[1]);
+            episodeURL = constructEpURL(args);
         }
-
-        //Parse the series name
-
+        else{
+            System.out.println("Input command arguments incorrect" +
+                    "\n\n Use following format to download an episode when you know the exact episode::\n" +
+                    "EpisodesDownloader \"Modern Family\" s3-e12\n\n" +
+                    "To get the latest episode, use the following format::\n" +
+                    "EpisodesDownloader \"Modern Family\" -l\n");
+            return;
+        }
 
         //create the url
-        String requestURL= Constants.WEBPAGE + "/" + Constants.EPISODE + "/" + seriesName + "_" + episodeNumber + Constants.HTML.toLowerCase();
+        String requestURL= Constants.WEBPAGE + "/" + Constants.EPISODE + "/" + episodeURL + Constants.HTML.toLowerCase();
         System.out.println(requestURL);
 
-        String encodedLink = makeRequest(requestURL);
+        Elements elem = makeRequest(requestURL);
+
+        String encodedLink = getEncodedLink(elem);
         System.out.println(encodedLink);
         String downloadLink = decodeBase64(encodedLink);
         System.out.println(downloadLink);
-        try {
-            DownloadVideo(downloadLink);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+//        try {
+//            DownloadVideo(downloadLink);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
-    private static void constructLatestEpURL() {
+    private static String constructEpURL(String[] args) {
+        //parse the season number and episode number
+        return parseSpaces(args[0]) + "_" + parseEpisodeNumber(args[1]);
+    }
+
+    private static String parseSpaces(String arg) {
+        return arg.replace(" ","_");
+    }
+
+    private static String constructLatestEpURL(String[] args) {
+        String retrievedURL = "";
+        
+        return parseSpaces(args[0]) + "_" + retrievedURL;
     }
 
     private static String decodeBase64(String encodedString)
@@ -58,7 +76,7 @@ public class Main {
         return str.replace("e","_e");
     }
 
-    private static String makeRequest(String constructedURL)
+    private static Elements makeRequest(String constructedURL)
     {
         Document doc = null;
         try {
@@ -66,23 +84,18 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Elements links = doc.select("a[href]");
-        return parseLinks(links);
+        return doc.select("a[href]");
     }
 
-    private static String parseLinks(Elements e)
+    private static String getEncodedLink(Elements e)
     {
-        String downloadLink = "";
-        print("\nLinks: (%d)", e.size());
-
         for (Element link : e) {
             if(link.attr("abs:href").contains("cale.html?r"))
             {
-                downloadLink = link.attr("href").replace("?","").substring(12);
-                break;
+                return link.attr("href").replace("?","").substring(12);
             }
         }
-        return downloadLink;
+        return null;
     }
 
     private static void print(String msg, Object... args) {
