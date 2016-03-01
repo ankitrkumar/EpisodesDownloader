@@ -5,7 +5,8 @@ package com.kumarankit.episodedownloader;
  */
 public class Constants {
 
-    public static String WEBPAGE = "http://thewatchseries.to/";
+    public static String WEBPAGE = "http://thewatchseries.to";
     public static String SERIES = "serie";
     public static String EPISODE = "episode";
+    public static String HTML = ".html";
 }
