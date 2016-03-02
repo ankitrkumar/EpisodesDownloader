@@ -18,25 +18,25 @@ public class Main {
         //Sample for study : http://thewatchseries.to/episode/modern_family_s7_e14.html
 
         try{
-            while(!download_success) {
-                String requestURL = "";
-                if (args[1].equals("-l"))                     //ED "Modern Family" -l  #download the latest episode of this series
-                {
-                    requestURL = constructLatestEpURL(args);
-                } else if (args.length == 2 && !args[1].equals("-l"))                                         ////Input given as ED "Modern Family" s1-e14
-                {
-                    requestURL = Constants.WEBPAGE + "/" + Constants.EPISODE + "/" + constructEpURL(args) + Constants.HTML.toLowerCase();
-                } else {
-                    System.out.println("Input command arguments incorrect" +
-                            "\n\n Use following format to download an episode when you know the exact episode::\n" +
-                            "EpisodesDownloader \"Modern Family\" s3e12\n\n" +
-                            "To get the latest episode, use the following format::\n" +
-                            "EpisodesDownloader \"Modern Family\" -l\n");
-                    return;
-                }
+            String requestURL = "";
+            if (args[1].equals("-l"))                     //ED "Modern Family" -l  #download the latest episode of this series
+            {
+                requestURL = constructLatestEpURL(args);
+            } else if (args.length == 2 && !args[1].equals("-l"))                                         ////Input given as ED "Modern Family" s1-e14
+            {
+                requestURL = Constants.WEBPAGE + "/" + Constants.EPISODE + "/" + constructEpURL(args) + Constants.HTML.toLowerCase();
+            } else {
+                System.out.println("Input command arguments incorrect" +
+                        "\n\n Use following format to download an episode when you know the exact episode::\n" +
+                        "EpisodesDownloader \"Modern Family\" s3e12\n\n" +
+                        "To get the latest episode, use the following format::\n" +
+                        "EpisodesDownloader \"Modern Family\" -l\n");
+                return;
+            }
 
+            while(!download_success) {
                 //create the url
-//                System.out.println(requestURL);
+                // System.out.println(requestURL);
 
                 Elements elem = makeRequest(requestURL);
 
@@ -54,6 +54,12 @@ public class Main {
     }catch(Exception e)
     {
         System.out.println("\nError in fetching and downloading file. Verify if the episode exists.");
+
+        System.out.println("Input command arguments incorrect" +
+                "\n\n Use following format to download an episode when you know the exact episode::\n" +
+                "EpisodesDownloader \"Modern Family\" s3e12\n\n" +
+                "To get the latest episode, use the following format::\n" +
+                "EpisodesDownloader \"Modern Family\" -l\n");
     }
     }
 
@@ -120,8 +126,8 @@ public class Main {
         return null;
     }
 
-    private static void DownloadVideo(String url) throws IOException {
-
+    private static void DownloadVideo(String url) throws IOException
+    {
         ProcessBuilder builder = new ProcessBuilder(
                 "cmd.exe", "/c", "youtube-dl "+ url);
         builder.redirectErrorStream(true);
