@@ -10,6 +10,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Base64;
 
+
+/*
+* Main.java: Entry point to the EpisodesDownloader Utility
+* */
 public class Main {
     boolean download_success = false;
     int failed_count = 0;
