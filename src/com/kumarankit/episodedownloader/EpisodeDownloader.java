@@ -21,35 +21,20 @@ public class EpisodeDownloader {
     }
 
     public void downloadVideo(String[] args) {
-
         try{
-            //TODO: store the Get All Available date shows in a config file and then
-            // fetch only if time elapsed is > 6 months for new shows added.
-            {
-                videoSource.GetAllAvailableShows();
-            }
-
-            List<String> targetURLs;
-            if (args[1].equals("-l"))                     //ED "Modern Family" -l  #download the latest episode of this series
-                targetURLs = videoSource.GetLatestEpisodeUrls(args[0]);
-            else if (args.length == 2 && !args[1].equals("-l"))                                         ////Input given as ED "Modern Family" s1-e14
-                targetURLs = videoSource.GetRequestUrlsFromShow(args[0], args[1]);
-            else {
-                System.out.println("Input command arguments incorrect" +
-                        "\n\n Use following format to download an episode when you know the exact episode::\n" +
-                        "EpisodesDownloader \"Modern Family\" s3e12\n\n" +
-                        "To get the latest episode, use the following format::\n" +
-                        "EpisodesDownloader \"Modern Family\" -l\n");
-                return;
-            }
-
+            List<String> targetURLs = parseCommandLine(args);
             while(!download_success) {
                 try {
+                    if(targetURLs !=null && targetURLs.size() > 0)
                     DownloadVideo(targetURLs.get(failCount));
-                } catch (IOException e) {
+                    else
+                        break;
+                } catch (Exception e) {
                     System.out.println("Download attempt failed from link " + failCount + ". Retrying...");
                 }
             }
+            if(!download_success)
+                System.out.println("\nNo links found for this show.");
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -57,13 +42,36 @@ public class EpisodeDownloader {
 
             System.out.println("Input command arguments incorrect" +
                     "\n\n Use following format to download an episode when you know the exact episode::\n" +
-                    "EpisodesDownloader \"Modern Family\" s3e12\n\n" +
+                    "java -jar EpisodesDownloader \"Modern Family\" s3e12\n\n" +
                     "To get the latest episode, use the following format::\n" +
-                    "EpisodesDownloader \"Modern Family\" -l\n");
+                    "java -jar EpisodesDownloader \"Modern Family\" -l\n");
         }
 
     }
 
+    private List<String> parseCommandLine(String[] args)
+    {
+        if (args.length == 2 && args[1].equals("-l"))                     //ED "Modern Family" -l  #download the latest episode of this series
+        {
+            return videoSource.GetLatestEpisodeUrls(args[0]);
+        }
+        else if (args.length == 2 && !args[1].equals("-l"))                                         ////Input given as ED "Modern Family" s1-e14
+        {
+            return videoSource.GetRequestUrlsFromShow(args[0], args[1]);
+        }
+        else if (args.length == 1 && args[0].equals("-update"))                                         ////Input given as ED "Modern Family" s1-e14
+        {
+            videoSource.GetAllAvailableShows();
+        }
+        else {
+            System.out.println("Input command arguments incorrect" +
+                    "\n\n Use following format to download an episode when you know the exact episode::\n" +
+                    "java -jar EpisodesDownloader \"Modern Family\" s3e12\n\n" +
+                    "To get the latest episode, use the following format::\n" +
+                    "java -jar EpisodesDownloader \"Modern Family\" -l\n");
+        }
+        return null;
+    }
     private void DownloadVideo(String url) throws IOException
     {
         ProcessBuilder builder = new ProcessBuilder(
@@ -78,7 +86,7 @@ public class EpisodeDownloader {
             if (line == null) {
                 break;
             }
-            System.out.println(line);
+            System.out.print(line + "\r");
             if(line.contains("ERROR"))
             {
                 download_success = false;

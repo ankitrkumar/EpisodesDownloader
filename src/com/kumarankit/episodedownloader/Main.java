@@ -1,12 +1,13 @@
 package com.kumarankit.episodedownloader;
 
-/*
-* Main.java: Entry point to the EpisodesDownloader Utility
-* */
+/**
+ * Created by Ankit on 3/1/2016.
+ * Main.java: Entry point to the EpisodesDownloader Utility
+ */
 public class Main {
 
     public static void main(String[] args) {
         EpisodeDownloader epiDown = new EpisodeDownloader();
-        epiDown.downoadVideo(args);
+        epiDown.downloadVideo(args);
     }
 }

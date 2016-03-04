@@ -22,60 +22,118 @@ public class WatchSeries implements VideoSource {
     static String EPISODE = "episode";
     static String HTML = ".html";
     static String LETTER = "letters";
-
     ShowNameManager showNameManager = new ShowNameManager();
-    @Override
-    public List<String> GetRequestUrlsFromShow(String showName, String seasonEpisode) {
-        String targetUrl = //showNameManager.get(showName);
-                BASEURL+ "/"
-                + EPISODE + "/"
-                + constructEpURL(showNameManager.get(showName.toUpperCase()), seasonEpisode)
-                + HTML.toLowerCase();
-        Elements elements = makeRequest(targetUrl);
-        System.out.println(targetUrl);
-        List<String> encodedUrls = getEncodedVideoUrls(elements);
-        List<String> downloadUrls = getDecodedVideoUrls(encodedUrls);
-        return downloadUrls;
 
+    @Override
+    public List<String> GetRequestUrlsFromShow(String showName, String seasonEpisode)
+    {
+        String targetUrl = null;
+        try {
+            targetUrl = BASEURL + "/"
+                    + EPISODE + "/"
+                    + constructEpURL(showNameManager.get(showName.toUpperCase()), seasonEpisode)
+                    + HTML.toLowerCase();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Looks like you are running this utility for the first time" +
+                    "\n" + "Please run the command java -jar EpisodesDownloader -update");
+        }
+        return createUrlList(targetUrl);
     }
 
     @Override
-    public List<String> GetLatestEpisodeUrls(String showName) {
-        String targetUrl = BASEURL + "/" + SERIES + "/" + showNameManager.get(showName.toUpperCase());
-        Elements elements = makeRequest(targetUrl);
-
-        String showUrl = getLatestEpisodeLink(elements);
-        elements = makeRequest(showUrl);
-        List<String> encodedUrls = getEncodedVideoUrls(elements);
-        List<String> downloadUrls = getDecodedVideoUrls(encodedUrls);
-        return downloadUrls;
-        //return getLatestEpisodeLink(makeRequest(targetUrl));
+    public List<String> GetLatestEpisodeUrls(String showName)
+    {
+        String targetUrl = null;
+        try {
+         targetUrl = BASEURL + "/" + SERIES + "/" + showNameManager.get(showName.toUpperCase());
+        }
+        catch (Exception e)
+        {
+            System.out.println("Looks like you are running this utility for the first time" +
+                    "\n" + "Please run the command java -jar EpisodesDownloader -update");
+        }
+        return createUrlList(targetUrl);
     }
 
+    private List<String> createUrlList(String targetURL)
+    {
+        List<String> encodedUrls = null, downloadUrls = null;
+        Elements elements = null;
+        String showUrl = null;
+        if(targetURL != null) {
+            elements = makeRequest(targetURL);
+        }
+        if(elements != null) {
+            showUrl = getLatestEpisodeLink(elements);
+        }
+        if(showUrl != null) {
+            elements = makeRequest(showUrl);
+        }
+        if(elements != null) {
+            encodedUrls= getEncodedVideoUrls(elements);
+        }
+        if(encodedUrls != null) {
+            downloadUrls = getDecodedVideoUrls(encodedUrls);
+        }
+        return downloadUrls;
+    }
     @Override
     public void GetAllAvailableShows()
     {
         //TODO: Reconsider this implementation
         try {
-            String[] pages = {"T","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+            String[] pages = {"09","A","B","C","D","E","F","G","H","I","J","K","L","M","N",
+                    "O","P","Q","R","S","T","U","V","W","X","Y","Z"};
             for (String s : pages) {
-                Elements elements = makeRequest(constructSeriesFetchByCharacterURL(s));
+                showNameManager = new ShowNameManager();
+                Elements elements = makeRequest(constructFetchByCharacterURL(s));
                 if (elements != null) {
                     for (Element e : elements) {
-                        if (e.attr("abs:href").contains(BASEURL + "/" + SERIES + "/") && e.text() != null && e.text().length() > 5 && e.attr("abs:href").length() > 7) {
-                            showNameManager.put(e.text().substring(0, e.text().trim().length() - 4).toUpperCase(), e.attr("href").substring(7));
-
+                        if (criteriaMatchForMap(e)) {
+                            showNameManager.put(getKeyFromName(e), getValueFromLink(e));
                         }
                     }
                 }
+                showNameManager.writeToFile(s);
             }
         }
         catch(Exception e)
         {
             e.printStackTrace();
         }
-        showNameManager.writeToFile();
     }
+
+    private String getValueFromLink(Element e) {
+        return e.attr("href").substring(("/" + SERIES + "/").length());
+    }
+
+    private String getKeyFromName(Element e) {
+        boolean parsable = true;
+        String textFromE = e.text().trim();
+        try {
+            Integer.parseInt(textFromE.substring(textFromE.length()-4));
+        }
+        catch(Exception n)  //TODO: split into numberformatexcep and outofboundsexcep?
+        {
+            parsable = false;
+        }
+        textFromE = textFromE.toUpperCase();
+        if(parsable)
+        {
+            return textFromE.substring(0, textFromE.length()-4);
+        }
+        else
+            return textFromE;
+    }
+
+    private boolean criteriaMatchForMap(Element e) {
+        return e.attr("abs:href").contains(BASEURL + "/" + SERIES + "/")
+                && e.text() != null
+                && e.attr("href").length() > ("/" + SERIES + "/").length();
+    }
+
     private List<String> getEncodedVideoUrls(Elements elements)
     {
         List<String> urls = new ArrayList<>();
@@ -107,7 +165,7 @@ public class WatchSeries implements VideoSource {
     /*
     Construct URL for fetching all episodes for all alphabets
      */
-    private String constructSeriesFetchByCharacterURL(String alphabet)
+    private String constructFetchByCharacterURL(String alphabet)
     {
         return BASEURL + "/" + LETTER + "/" + alphabet;
     }
@@ -117,18 +175,16 @@ public class WatchSeries implements VideoSource {
         return str.replace("e","_e");
     }
 
-    private String parseSpaces(String arg) {
-        return arg.replace(" ","_");
-    }
-
     private String getLatestEpisodeLink(Elements elements) {
+        //// TODO: 3/4/2016 Check for no links returned...i.e. 0 links for episode avalible
         for (Element e : elements) {
             if(e.text().contains("links)") && e.attr("abs:href").contains(BASEURL + "/" + EPISODE))
             {
-                return e.attr("abs:href");
+                if(existsLinks(e))
+                    return e.attr("abs:href");
             }
         }
-        return "";
+        return null;
     }
 
     private Elements makeRequest(String constructedURL)
@@ -142,4 +198,8 @@ public class WatchSeries implements VideoSource {
         return doc != null ? doc.select("a[href]") : null;
     }
 
+    private boolean existsLinks(Element e)
+    {
+     return !e.text().contains("(0 links)") && e.attr("abs:href").contains(BASEURL + "/" + EPISODE);
+    }
 }
