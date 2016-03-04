@@ -11,7 +11,9 @@ import java.util.Base64;
 import java.util.List;
 
 /**
- * Created by Akhil on 3/2/2016.
+ * Created by Akhil Panchal on 3/2/2016.
+ * WatchSeries.java:    A video source that finds download urls from
+ *                      www.watchseries.to
  */
 public class WatchSeries implements VideoSource {
 
@@ -48,7 +50,7 @@ public class WatchSeries implements VideoSource {
     }
 
     private String constructLatestEpURL(String[] args) {
-        String pageURL = Constants.WEBPAGE + "/" + Constants.SERIES + "/" + parseSpaces(args[0]);
+        String pageURL = BASEURL + "/" + SERIES + "/" + parseSpaces(args[0]);
         return getLatestEpisodeLink(makeRequest(pageURL));
     }
 
@@ -91,7 +93,7 @@ public class WatchSeries implements VideoSource {
 
     private String getLatestEpisodeLink(Elements elements) {
         for (Element e : elements) {
-            if(e.text().contains("links)") && e.attr("abs:href").contains(Constants.WEBPAGE + "/" + Constants.EPISODE))
+            if(e.text().contains("links)") && e.attr("abs:href").contains(BASEURL + "/" + EPISODE))
             {
                 return e.attr("abs:href");
             }

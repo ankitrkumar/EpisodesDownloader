@@ -8,16 +8,22 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 /**
- * Created by Akhil on 3/1/2016.
+ * Created by Akhil Panchal on 3/1/2016.
+ * EpisodeDownloader.java:  Responsible for downloading
+ *                          the requested episode from the URLs given by a Video Source
  */
 public class EpisodeDownloader {
 
     private boolean download_success;
     private int failCount;
+    private VideoSource videoSource;
+
+    public EpisodeDownloader() {
+        videoSource = new WatchSeries();
+    }
 
     public void downLoadVideo(String[] args) {
 
-        VideoSource videoSource = new WatchSeries();
         try{
             List<String> targetURLs;
             if (args[1].equals("-l"))                     //ED "Modern Family" -l  #download the latest episode of this series
@@ -67,7 +73,6 @@ public class EpisodeDownloader {
             if (line == null) {
                 break;
             }
-//            if (!line.contains("ERROR"))
             System.out.println(line);
             if(line.contains("ERROR"))
             {

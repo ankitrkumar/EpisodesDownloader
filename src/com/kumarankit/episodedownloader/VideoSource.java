@@ -4,7 +4,8 @@ package com.kumarankit.episodedownloader;
 import java.util.List;
 
 /**
- * Created by Akhil on 3/2/2016.
+ * Created by Akhil Panchal on 3/2/2016.
+ * VideoSource.java:    Interface for getting download urls.
  */
 public interface VideoSource {
 
