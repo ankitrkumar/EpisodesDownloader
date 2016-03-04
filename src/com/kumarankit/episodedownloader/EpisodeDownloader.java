@@ -1,7 +1,5 @@
 package com.kumarankit.episodedownloader;
 
-import org.jsoup.select.Elements;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,7 +20,7 @@ public class EpisodeDownloader {
         videoSource = new WatchSeries();
     }
 
-    public void downLoadVideo(String[] args) {
+    public void downoadVideo(String[] args) {
 
         try{
             List<String> targetURLs;

@@ -49,11 +49,6 @@ public class WatchSeries implements VideoSource {
         //return getLatestEpisodeLink(makeRequest(targetUrl));
     }
 
-    private String constructLatestEpURL(String[] args) {
-        String pageURL = BASEURL + "/" + SERIES + "/" + parseSpaces(args[0]);
-        return getLatestEpisodeLink(makeRequest(pageURL));
-    }
-
     private List<String> getEncodedVideoUrls(Elements elements)
     {
         List<String> urls = new ArrayList<>();
