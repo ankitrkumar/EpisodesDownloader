@@ -20,9 +20,15 @@ public class EpisodeDownloader {
         videoSource = new WatchSeries();
     }
 
-    public void downoadVideo(String[] args) {
+    public void downloadVideo(String[] args) {
 
         try{
+            //TODO: store the Get All Available date shows in a config file and then
+            // fetch only if time elapsed is > 6 months for new shows added.
+            {
+                videoSource.GetAllAvailableShows();
+            }
+
             List<String> targetURLs;
             if (args[1].equals("-l"))                     //ED "Modern Family" -l  #download the latest episode of this series
                 targetURLs = videoSource.GetLatestEpisodeUrls(args[0]);
@@ -46,6 +52,7 @@ public class EpisodeDownloader {
             }
         }catch(Exception e)
         {
+            e.printStackTrace();
             System.out.println("\nError in fetching and downloading file. Verify if the episode exists.");
 
             System.out.println("Input command arguments incorrect" +

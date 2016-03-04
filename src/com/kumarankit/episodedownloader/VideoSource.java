@@ -14,6 +14,7 @@ public interface VideoSource {
     * */
     List<String> GetRequestUrlsFromShow(String showName, String seasonEpisode);
     List<String> GetLatestEpisodeUrls(String showName);
+    void GetAllAvailableShows();
     //Elements GetRemainingEpisodesFromShowsFile(String filePath);
 
 }
