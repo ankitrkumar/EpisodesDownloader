@@ -1,8 +1,9 @@
-#Work in progress.
+#Episodes Downloader.
 
+####Work in Progress.
 ####Experimental Java program to download an episode of any tv series listed on thewatchseries.to
 
-Download [youtube-dl](https://yt-dl.org/downloads/2016.03.01/youtube-dl.exe) and save it in the same folder as the EpisodeDownloader.jar folder. 
+Download for windows [youtube-dl](https://yt-dl.org/downloads/2016.03.01/youtube-dl.exe) and save it in the same folder as the EpisodeDownloader.jar folder. 
 
 To run the program,
 
