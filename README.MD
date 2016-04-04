@@ -1,6 +1,6 @@
 # Episodes Downloader.
 
-[![Under Development](https://img.shields.io/badge/under-development-orange.svg)](https://github.com/cez-aug/github-project-boilerplate) [![Public Domain](https://img.shields.io/badge/public-domain-lightgrey.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
+[![Under Development](https://img.shields.io/badge/under-development-orange.svg)](https://github.com/ankitrkumar/EpisodesDownloader) [![Public Domain](https://img.shields.io/badge/public-domain-lightgrey.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
 
 #### Work in Progress.
 #### Experimental Java program to download an episode of any tv series listed on thewatchseries.to
