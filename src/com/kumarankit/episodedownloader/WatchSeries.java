@@ -191,7 +191,7 @@ public class WatchSeries implements VideoSource {
     {
         Document doc = null;
         try {
-            doc = Jsoup.connect(constructedURL).get();
+            doc = Jsoup.connect(constructedURL).userAgent("Mozilla").get();
         } catch (IOException e) {
             System.out.println("The requested show isn't available.");
         }

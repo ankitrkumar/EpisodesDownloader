@@ -1,17 +1,24 @@
-#Work in progress.
+#Episodes Downloader.
 
+####Work in Progress.
 ####Experimental Java program to download an episode of any tv series listed on thewatchseries.to
 
-Download [youtube-dl](https://yt-dl.org/downloads/2016.03.01/youtube-dl.exe) and save it in the same folder as the EpisodeDownloader.jar folder. 
+Download for windows [youtube-dl](https://yt-dl.org/downloads/2016.03.01/youtube-dl.exe) and save it in the same folder as the EpisodeDownloader.jar folder. 
 
 To run the program,
 
+This command needs tobe run the first time to index all the avaialbel shows.
+'''
+java -jar path_to_jar_file/EpisodesDownloader.jar -update
+'''
+To download the latest episode,
+'''
 java -jar path_to_jar_file/EpisodesDownloader.jar "series name" -l
-
+'''
 -l is the argument to download the latest episode
 
-to download a specific episode
-
+To download a specific episode
+'''
 java -jar path_to_jar_file/EpisodesDownloader.jar "series name" s1e14
-
+'''
 s(number) is the season number e(number) is the episode number.
