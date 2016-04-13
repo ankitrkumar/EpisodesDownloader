@@ -37,8 +37,7 @@ public class EpisodeDownloader {
                 System.out.println("\nNo links found for this show.");
         }catch(Exception e)
         {
-            e.printStackTrace();
-            System.out.println("\nError in fetching and downloading file. Verify if the episode exists.");
+            System.out.println("\nError in fetching and downloading file. Verify if the episode exists. Visit thewatchseries.to");
 
             System.out.println("Input command arguments incorrect" +
                     "\n\n Use following format to download an episode when you know the exact episode::\n" +
