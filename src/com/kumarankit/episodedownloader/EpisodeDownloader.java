@@ -62,6 +62,8 @@ public class EpisodeDownloader {
         else if (args.length == 1 && args[0].equals("-update"))                                         ////Input given as ED "Modern Family" s1-e14
         {
             videoSource.GetAllAvailableShows();
+            download_success = true;
+            System.out.println("Website index updated! Proceed to download.");
         }
         else {
             System.out.println("Input command arguments incorrect" +
